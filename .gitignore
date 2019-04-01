@@ -1,3 +1,5 @@
 /dist/
 /node_modules/
 /server/data/
+/server/src/__pycache__/
+**/#*
