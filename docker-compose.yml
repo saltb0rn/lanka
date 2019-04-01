@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+
+  mysql:
+    container_name: mysql
+    image: mysql
+    restart: on-failure
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3306:3306"
+    volumes:
+      - "./server/sql:/docker-entrypoint-initdb.d"
+      - "./server/data:/var/lib/mysql"
+      - "./server/mysql.cnf:/etc/mysql/conf.d/mysql.cnf"
+
+
+  chat:
+    container_name: chat
+    image: saltborn/chat
+    restart: on-failure
+    environment:
+      - MYSQL_HOST=mysql
+    depends_on:
+      - mysql
+    ports:
+      - "8000:8888"
+    volumes:
+      - "./server:/app"
+    command: sh -c "/app/wait-for-it.sh mysql:3306 -- python3 /app/run.py"
