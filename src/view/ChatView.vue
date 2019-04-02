@@ -7,8 +7,8 @@
 
 .chat-form-wrapper {
     margin: auto;
-    height: 98vh;
-    width: 98vw;
+    height: 100%;
+    width: 100%;
 }
 
 .chat-form {

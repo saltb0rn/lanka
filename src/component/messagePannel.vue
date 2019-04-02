@@ -6,14 +6,18 @@
   }
 
   .msg-area {
-      height: 90%;
+      height: 95%;
       overflow: hidden scroll;
       scroll-behavior: smooth;
   }
 
   .input-area {
-      height: 10%;
+      height: 5%;
       display: flex;
+  }
+
+  .form-control {
+      height: 100%;
   }
 
   input {
@@ -101,9 +105,10 @@
         </div>
       </div>
     </section>
-    <b-input-group prepend="Message" class="mt-3">
+    <b-input-group prepend="Message" class="input-area">
       <b-form-textarea v-model="msg"
                        rows="1"
+                       no-resize
                        />
       <b-input-group-append>
         <b-button variant="outline-succes" @click="sendMessage">Send Message</b-button>

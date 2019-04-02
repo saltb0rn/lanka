@@ -16,7 +16,6 @@ services:
       - "./server/data:/var/lib/mysql"
       - "./server/mysql.cnf:/etc/mysql/conf.d/mysql.cnf"
 
-
   chat:
     container_name: chat
     image: saltborn/chat
