@@ -19,11 +19,16 @@ Vue.use(BootstrapeVue);
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
 
-const routes = [
+let server = 'http://localhost:8000',
+    wsserver = "ws://localhost:8000/chatsocket";
 
-    { name: 'login', path: '/login', component: LoginView },
-    { name: 'register', path: '/register', component: RegisterView },
-    { name: 'chat', path: '/chat', component: ChatView }
+const routes = [
+    { name: 'login', path: '/login',
+      component: LoginView, props: { server } },
+    { name: 'register', path: '/register',
+      component: RegisterView, props: { server }},
+    { name: 'chat', path: '/chat',
+      component: ChatView, props: { server:  wsserver }}
 ];
 
 const router = new VueRouter({
@@ -38,6 +43,12 @@ new Vue({
             </transition>
 `,
     mounted: function() {
+        this.axios.defaults.withCredentials = true;
+        if (!Cookies.get('_xsrf')) {
+            this.axios.get(`${server}/fetch`);
+        } else {
+            this.axios.defaults.headers.common['X-Xsrftoken'] = Cookies.get('_xsrf');
+        }
         if (Cookies.get('uid')) {
             this.$router.push({name: 'chat'});
         } else {

@@ -150,7 +150,9 @@ export default {
             function() {
                 // axios, return true or false, use debounced
 
-                if (!this.username || this.username == "") {
+                if (!this.username ||
+                    this.username == "" ||
+                    this.username.includes(' ')) {
                     this.isUsernameValid = false;
                     return;
                 }
@@ -181,7 +183,8 @@ export default {
         isPasswordRight: debounce(
             function() {
                 let res = (this.password && this.passwordComfirm) &&
-                    (this.password == this.passwordComfirm);
+                    (this.password == this.passwordComfirm) &&
+                    (!this.password.includes(' '));
                 this.isPasswordValid = res;
                 this.isPasswordComfirmValid = res;
                 return res;

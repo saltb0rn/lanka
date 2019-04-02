@@ -6,7 +6,6 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 import tornado.websocket
-import os.path
 import peewee
 import uuid
 
@@ -23,12 +22,11 @@ class Application(tornado.web.Application):
         handlers = [(r"/chatsocket", ChatSocketHandler),
                     (r"/login", LoginHandler),
                     (r"/register", RegisterHandler),
+                    (r"/fetch", FetchHandler),
                     (r"/preflight", UserPreflightHandler)]
         settings = dict(
             cookie_secret="2wdgQU9UQn+6KBnUocm75KHpqxMSHElBj+BINI7k7zY=",
-            # template_path=os.path.join(os.path.dirname(__file__), "../src/html"),
-            static_path=os.path.join(os.path.dirname(__file__), "static"),
-            # xsrf_cookies=True, # TODO
+            xsrf_cookies=True,
             debug=True
         )
         super().__init__(handlers, **settings)
@@ -44,13 +42,16 @@ class BaseRequestHandler(tornado.web.RequestHandler):
             self.set_header("Access-Control-Allow-Credentials", "true")
         else:
             self.set_header("Access-Control-Allow-Origin", "*")
-        self.set_header("Access-Control-Allow-Headers", "content-type")
-        self.set_header("Access-Control-Allow-Methods", "POST, OPTIONS")
+        self.set_header("Access-Control-Allow-Headers",
+                        "content-type, X-Xsrftoken, X-Csrftoken")
+        self.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 
     def options(self):
         self.set_status(204)
 
     def prepare(self):
+        self.xsrf_token
+        # self.set_cookie('_xsrf', self.xsrf_token)
         if not database.is_closed():
             database.close()
             database.connect()
@@ -60,6 +61,12 @@ class BaseRequestHandler(tornado.web.RequestHandler):
         if not database.is_closed():
             database.close()
         return super().on_finish()
+
+
+class FetchHandler(BaseRequestHandler):
+    def get(self):
+        self.xsrf_token
+        self.on_finish()
 
 
 class RegisterHandler(BaseRequestHandler):
@@ -243,7 +250,6 @@ class ChatSocketHandler(tornado.websocket.WebSocketHandler):
                 logging.error('Error sending message', exc_info=True)
 
     def on_message(self, message):
-        logging.info('got message %r', message)
         parsed = tornado.escape.json_decode(message)
         now = datetime.datetime.now()
         username = self.username

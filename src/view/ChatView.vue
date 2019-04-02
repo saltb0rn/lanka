@@ -7,7 +7,7 @@
 
 .chat-form-wrapper {
     margin: auto;
-    height: 98vh; 
+    height: 98vh;
     width: 98vw;
 }
 
@@ -20,7 +20,7 @@
 <template>
 <div class="chat-view">
   <div class="chat-form-wrapper">
-    <message-pannel class="chat-form" wsserver="ws://localhost:8000/chatsocket"></message-pannel>
+    <message-pannel class="chat-form" :wsserver="server"></message-pannel>
   </div>
   </div>
 </template>
@@ -28,6 +28,12 @@
 import MessagePannel from "../component/messagePannel.vue";
 
 export default {
+    props: {
+        server: {
+            type: String,
+            required: true,
+        }
+    },
     components: {
         MessagePannel
     }

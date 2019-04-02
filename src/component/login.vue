@@ -63,11 +63,11 @@ export default {
     methods: {
         login() {
             // login if cookie is not set, otherwise redirect to chat page
-            this.axios.defaults.withCredentials = true;
+
             this.axios.post(`${this.server}/login`,
                             {
                                 id: this.identifier,
-                                password: this.password
+                                password: this.password,
                             })
                 .then(
                     (rsp) => {

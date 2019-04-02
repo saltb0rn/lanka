@@ -23,7 +23,7 @@
 <template>
 <div class="login-view">
   <div class="login-form-wrapper">
-    <login-pannel class="login-form" server="http://localhost:8000"></login-pannel>
+    <login-pannel :server="server" class="login-form"></login-pannel>
   </div>
 </div>
 </template>
@@ -31,8 +31,15 @@
 import LoginPannel from "../component/login.vue";
 
 export default {
+    props: {
+        server: {
+            type: String,
+            required: true,
+        }
+    },
+
     components: {
         LoginPannel
-    }
+    },
 }
 </script>

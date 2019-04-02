@@ -162,11 +162,14 @@ export default {
         }
     },
 
-    created() {
+    mounted() {
+        this.msgArea = document.querySelector('.msg-area');
+
         if (!Cookies.get('uid')) {
             this.$router.push({name: 'login'});
             return;
         }
+
         let vm = this;
         this.ws = new WebSocket(vm.wsserver);
         this.ws.onopen = function() {
@@ -193,10 +196,5 @@ export default {
             console.log('you are leaving');
         };
     },
-
-    mounted() {
-        this.msgArea = document.querySelector('.msg-area');
-    },
-
 }
 </script>
