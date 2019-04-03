@@ -176,9 +176,11 @@ This method is implementing the second way.
             */
             var vm = this;
             this.timeoutID = setTimeout(function() {
+                let _timeoutID = this.timeoutID;
                 console.log('pinging ...');
                 vm.ws.send('ping');
                 vm.ping();
+                clearTimeout(_timeoutID);
             }, 50000);
         }
     },
@@ -198,6 +200,9 @@ This method is implementing the second way.
             Cookies.remove('uid');
             vm.ws.close();
             console.log('You are leaving');
+            if (vm.timeoutID) {
+                clearTimeout(vm.timeoutID);
+            }
         };
 
         if (!Cookies.get('uid')) {
@@ -226,9 +231,12 @@ This method is implementing the second way.
         this.ws.onclose = function() {
             vm.$router.push({name: 'login'});
             console.log('disconnecting');
-        };
-
+            if (vm.timeoutID) {
+                clearTimeout(vm.timeoutID);
+            };
+        }
         this.ping();
-    },
+
+    }
 }
 </script>

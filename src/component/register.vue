@@ -61,6 +61,7 @@
 
     <b-form-input id="password"
                   trim
+                  type="password"
                   v-model="password"
                   placeholder="Password"
                   @input="isPasswordRight" />
@@ -79,6 +80,7 @@
 
     <b-form-input id="passwordComfirm"
                   trim
+                  type="password"
                   placeholder="Password again"
                   v-model="passwordComfirm"
                   @input="isPasswordRight"/>

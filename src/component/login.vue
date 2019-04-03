@@ -28,7 +28,7 @@
       label="Password"
       label-for="password"
       >
-      <b-form-input id="password" v-model="password" placeholder="Password" trim/>
+      <b-form-input id="password" v-model="password" placeholder="Password" trim type="password"/>
     </b-form-group>
 
     <div class="submit-btn">
