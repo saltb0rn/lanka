@@ -34,24 +34,23 @@ class Application(tornado.web.Application):
 
 class BaseRequestHandler(tornado.web.RequestHandler):
 
-    def set_default_headers(self):
+    # def set_default_headers(self):
 
-        origin = self.request.headers.get('Origin')
-        if origin:
-            self.set_header("Access-Control-Allow-Origin", origin)
-            self.set_header("Access-Control-Allow-Credentials", "true")
-        else:
-            self.set_header("Access-Control-Allow-Origin", "*")
-        self.set_header("Access-Control-Allow-Headers",
-                        "content-type, X-Xsrftoken, X-Csrftoken")
-        self.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    #     origin = self.request.headers.get('Origin')
+    #     if origin:
+    #         self.set_header("Access-Control-Allow-Origin", origin)
+    #         self.set_header("Access-Control-Allow-Credentials", "true")
+    #     else:
+    #         self.set_header("Access-Control-Allow-Origin", "*")
+    #     self.set_header("Access-Control-Allow-Headers",
+    #                     "content-type, X-Xsrftoken, X-Csrftoken")
+    #     self.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 
-    def options(self):
-        self.set_status(204)
+    # def options(self):
+    #     self.set_status(204)
 
     def prepare(self):
         self.xsrf_token
-        # self.set_cookie('_xsrf', self.xsrf_token)
         if not database.is_closed():
             database.close()
             database.connect()
@@ -232,6 +231,7 @@ class ChatSocketHandler(tornado.websocket.WebSocketHandler):
             pass
         if not database.is_closed():
             database.close()
+        # self.clear_cookie('uid')
 
     @classmethod
     def update_cache(cls, chat):
@@ -250,7 +250,10 @@ class ChatSocketHandler(tornado.websocket.WebSocketHandler):
                 logging.error('Error sending message', exc_info=True)
 
     def on_message(self, message):
-        parsed = tornado.escape.json_decode(message)
+        try:
+            parsed = tornado.escape.json_decode(message)
+        except tornado.escape.json.JSONDecodeError:
+            return
         now = datetime.datetime.now()
         username = self.username
         try:

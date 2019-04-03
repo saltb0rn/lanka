@@ -141,7 +141,8 @@ export default {
         return {
             msg: "",
             msgs: [],
-            isSending: false
+            isSending: false,
+            timeoutID: null
         };
     },
 
@@ -150,6 +151,10 @@ export default {
             if(this.msg.length != 0) {
                 this.isSending = true;
                 this.ws.send(JSON.stringify({ body: this.msg }));
+                if (this.timeoutID) {
+                    clearTimeout(this.timeoutID);
+                    this.ping();
+                }
 
             }
         },
@@ -158,6 +163,23 @@ export default {
             setTimeout((function() {
                 this.msgArea.scrollTop = this.msgArea.scrollHeight;
             }).bind(this), 500);
+        },
+
+        ping() {
+            /*
+Nginx has the proxy_read_timeout (90s maybe) if the user doesn't any message in the proxy_read_timeout, the websocket connection will be closed by client.
+There are two ways to solve this problem,
+1. set the proxy_read_timeout much longer (not recommended).
+2. client sends a non-message data server ignores to server before connection closed.
+
+This method is implementing the second way.
+            */
+            var vm = this;
+            this.timeoutID = setTimeout(function() {
+                console.log('pinging ...');
+                vm.ws.send('ping');
+                vm.ping();
+            }, 50000);
         }
     },
 
@@ -168,18 +190,24 @@ export default {
     },
 
     mounted() {
+        let vm = this;
+
         this.msgArea = document.querySelector('.msg-area');
+
+        window.onbeforeunload = function() {
+            Cookies.remove('uid');
+            vm.ws.close();
+            console.log('You are leaving');
+        };
 
         if (!Cookies.get('uid')) {
             this.$router.push({name: 'login'});
             return;
         }
 
-        let vm = this;
         this.ws = new WebSocket(vm.wsserver);
         this.ws.onopen = function() {
             vm.uname = Cookies.get('uname');
-            Cookies.remove('uname');
             console.log('connected to chat server!');
         };
         this.ws.onmessage = function(evt) {
@@ -196,10 +224,11 @@ export default {
             vm.msg = "";
         };
         this.ws.onclose = function() {
-            Cookies.remove('uid');
             vm.$router.push({name: 'login'});
-            console.log('you are leaving');
+            console.log('disconnecting');
         };
+
+        this.ping();
     },
 }
 </script>

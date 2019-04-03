@@ -19,8 +19,8 @@ Vue.use(BootstrapeVue);
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
 
-let server = 'http://localhost:8000',
-    wsserver = "ws://localhost:8000/chatsocket";
+let server = '/api',
+    wsserver = `ws://${document.location.host}/chatsocket`;
 
 const routes = [
     { name: 'login', path: '/login',
