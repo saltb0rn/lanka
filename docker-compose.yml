@@ -22,6 +22,7 @@ services:
     restart: on-failure
     environment:
       - MYSQL_HOST=mysql
+      - DATABASE=MYSQL
     depends_on:
       - mysql
     # uncomment the ports if without nginx

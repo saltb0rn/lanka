@@ -2,14 +2,19 @@
 
 import os
 import peewee
-import playhouse.migrate
 
-database = peewee.MySQLDatabase(
-    database="USERDB",
-    host=os.environ.get('MYSQL_HOST', '172.25.0.2'),
-    user="saltborn",
-    password="saltborn",
-    charset="utf8mb4")
+DATABASE = os.environ.get('DATEBASE')
+
+if DATABASE == 'MYSQL':
+    database = peewee.MySQLDatabase(
+        database="USERDB",
+        host=os.environ.get('MYSQL_HOST', '172.25.0.2'),
+        user="saltborn",
+        password="saltborn",
+        charset="utf8mb4")
+else:
+    database = peewee.SqliteDatabase(os.path.join(
+        os.path.dirname(__file__), 'userdb.db'))
 
 
 class BaseModel(peewee.Model):

@@ -1,0 +1,23 @@
+version: "3.0"
+
+services:
+
+  chat:
+    container_name: chat
+    image: saltborn/chat
+    restart: on-failure
+    volumes:
+      - "./server:/app"
+    command: sh -c "python3 /app/run.py"
+
+  nginx:
+    container_name: nginx_chat
+    image: nginx
+    restart: on-failure
+    depends_on:
+      - chat
+    ports:
+      - "8888:80"
+    volumes:
+      - "./server/conf.d:/etc/nginx/conf.d"
+      - "./dist:/webui"
