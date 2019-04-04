@@ -43,16 +43,22 @@ new Vue({
             </transition>
 `,
     mounted: function() {
-        this.axios.defaults.withCredentials = true;
-        if (!Cookies.get('_xsrf')) {
-            this.axios.get(`${server}/fetch`);
-        } else {
-            this.axios.defaults.headers.common['X-Xsrftoken'] = Cookies.get('_xsrf');
-        }
+
         if (Cookies.get('uid')) {
             this.$router.push({name: 'chat'});
         } else {
             this.$router.push({name: 'login'});
+        }
+
+        this.axios.defaults.withCredentials = true;
+        if (!Cookies.get('_xsrf')) {
+            this.axios.get(`${server}/fetch`).then(
+                (rsp) => {
+                    this.axios.defaults.headers.common['X-Xsrftoken'] = Cookies.get('_xsrf');
+                }
+            );
+        } else {
+            this.axios.defaults.headers.common['X-Xsrftoken'] = Cookies.get('_xsrf');
         }
     },
     router
