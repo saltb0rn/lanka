@@ -1,1 +1,25 @@
-Edit file later.
+*** 目的
+
+    一个用来学习 =VueJs= 的 =demo=
+
+*** 关于lanka
+
+    =lanka= 是一个基于 =Websocket= 协议实现的 =WEB= 即时通信应用,由于以练习为目的,所以只支持一个聊天组.
+
+    项目演示地址: http://api.darksalt.me.
+
+    使用了 =Vue=, =vue-router= 和 =bootstrap-vue= 进行前端开发,后端使用 =Tornado= 做为主要框架进行开发.
+
+    最后,请不要在上面发送个人隐私.
+
+*** 本地运行
+
+    如果你想在本地运行该项目,可以使用 =docker-compose= 启动,有两种启动方式,
+
+    1. =docker-compose up=: 使用 =MYSQL= 做为数据库
+
+    2. =docker-compose -f docker-compose.sqlite.yml up=: 使用 =SQLite= 做为数据库
+
+    
+    最后在浏览器打开 http://localhost:8888
+       
